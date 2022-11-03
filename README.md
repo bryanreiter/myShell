@@ -3,6 +3,13 @@
 Originally I anticipated this project as being extremely difficult. I will not lie, it is definitely difficult
 and has me researching way more than any other project.
 
+## Details
+
+This project was written for my Operating Systems course (CIS 3207) at Temple University.
+It is a basic unix like shell that can perform redirection, piping, and basic background processing.
+
+There is functionality that I didn't have time to add that I may add in the future.
+
 
 ## Function
   ### `void checkIOorPipe(char *input, char **envp)`
