@@ -1,0 +1,122 @@
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+                myShell Manual
+                by: Bryan Reiter
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+NAME:
+    myShell
+
+COPYRIGHT:
+    myShell's code is copyright (C) of Bryan Reiter
+
+DESCRIPTION:
+    What is this shell?
+    This is a basic Unix shell. It can perform I/O redirection, Piping, and run programs. It also contains numerous built in functions.
+    This was created for my CIS 3107 Operating Systems course at Temple University.
+
+HOW TO USE:
+    You will be displayed a prompt, which expects the user to enter a valid command. If the command is invalid, you will be told.
+    Every command that exists in a normal linux shell (found in /bin/[command]), works with this shell, as well as a few builtins that I wrote, listed below.
+
+    You may also utilize I/O redirection or Piping which will be explained.
+
+BUILDTIN FUNCTIONS:
+
+    cd <directory>:
+        Changes current directory to <directory>. 
+        If there are no arguments passed, the absolute path of the directory is displayed.
+
+    clr:
+        Clears the screen
+
+    dir <directory>:
+        Lists the contents of the <directory>
+
+    environ:
+        List all of the environment strings
+
+    echo <comment>:
+        Displays <comment>
+
+    help:
+        Displays the user manual
+
+    pause:
+        Pause operations of the shell until the 'Enter' key is pressed.
+
+    quit:
+        Quits the shell.
+
+I/O REDIRECTION:
+
+    There are 3 different redirection symbols, each with their own meaning.
+
+    In order to redirect input and output, we must manipulate the file table.
+
+    We obtain the file descriptor of the file we want to write or read to and overwrite the stdout/stdin file descriptor in the file table with it.
+    This depends if want to write or read from a file. This then tells the system to write or read to the file.
+    Then we run fork() and exec() the commands (more on this later). 
+    Finally return the file table back to normal.
+
+    REDIRECTION:
+
+        1. >
+            This redirection is for standard output and OVERWRITING to a file.
+
+            Example: ls > output.txt
+            This runs ls, and outputs the result to output.txt, overwriting any previous data
+
+        2. >>
+            This redirection is for standard output redirection and APPENDING to a file.
+
+            Example: ls >> output.txt
+            This runs ls and outputs the results to output.txt, appending to the end of any previous data.
+
+        3. <
+            This redirection is for standard input redirection.
+
+            Example: grep foo < foo.txt
+            This runs grep, which searches for the string foo in foo.txt. It uses foo.txt as the input.
+
+        You can utilize both stdin and stdout redirection in a single command.
+
+        For example you can write:
+        grep foo < foo.txt > output.txt
+        This redirects the input to take from foo.txt and redirects the output to output.txt
+
+        ERRORS:
+            You will receieve an error if you incorrectly use a redirection arrow.
+            An arrow MUST have something on both the left and right of it. You will be told if you inputted incorrectly.
+
+            For example:
+                myShell~>| output.txt
+            is not a valid command.
+
+    PIPING(|):
+
+    WHAT IS PIPING:
+        A pipe is a type of redirection (transfering stdout to some other destination), that is used in many shells. It is used to send the output (left side) of one command, program, or process to another (right side) command, program, or process for more processing.
+
+    ERRORS:
+        You will receieve an error if you incorrectly use a redirection arrow.
+        A pipe (|) MUST have something on both the left and right of it. You will be told if you inputted incorrectly.
+
+
+IMPLEMENTATION NOTES:
+
+    How the shell actually runs non-builtins.
+
+        The shell utilizes two key library functions: fork() and 
+        execv().
+
+            fork():
+                This function creates a child process of the current process running. When we invoke this function, we then run execv() in JUST THE CHILD PROCESS.
+
+            execv():
+                This function belongs to the family of functions: exec(). execv() overlays the current process with a new one. We run this strictly in the child process, to be sure we don't overlay the actual shell process.
+
+    We first check the directory '/bin' for the command name, if it doesn't exist there, we check the current directory. If it can't be found in either, you will receive an error.
+
+
+    Enjoy using my shell! :)
+
+

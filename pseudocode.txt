@@ -1,0 +1,101 @@
+if(argc==2){
+    batchmode
+    return 0;
+}
+
+initiate the shell
+while(1){ //interactive
+    print input prompter
+    first do builtins that require no arguments to run
+    read user line
+        read user input line and store in a string.
+        return line
+    check line to see if any of our simple commands (clr, exit, pause)
+    if not run function to check for specials
+        if we find, set up what needs to be set up
+            split in the user input dependent on what we saw.
+            set up pipes/redirect etc
+            parse and check for builtins in it
+            restore anything that needs to be restored (ie restore fd's)
+    else
+        its just a normal builtin
+
+    //some examples of methods to do each special case
+        if &, fork() and run that process in the background
+
+        if pipe, fork() it and close stdout, dup2 and wire stdout to write end
+        close the read end
+
+        if >> then output redirect and append
+        open and get fd
+        dup2 fd with 1
+        then restore it back to stdout
+
+        if > redirect, if it exists overwrite it
+        check if < is there, then if it does we need to input and output redirect
+        else just output redirect
+
+        if just < then input redirect
+        dup2()
+        restore fd
+
+        fork()
+        construct command
+        execv()
+        wait for child to finish
+    if no pipes,redirects,&
+        then run just on buildins.
+    free tokens
+    free line
+}
+
+function for running special commands:
+checkSpecial(){
+    use strcmp to find whether its |,>,<,>>,&
+    check for what builtins we find in the command
+        if we find pipes, we need to wire the output end to the input end of each side of the pipe.
+        call pipe()
+        overwrite file descriptors
+        fork()
+            and close the correct ends of pipes
+            overwrite stdout with the output side of the pipe
+        execv()
+        wait for child to finish
+        fork()
+        if we find redirects, we need to open and then dup2(), and make it so the print writes to the file instead of terminal.
+        exec()
+        change stdout back to normal.
+    if no pipes,redirects,&
+        then run just on buildins.
+}
+//subject to change. May implement a handler to handle each one, that calls each function respectively based on what we parse.
+//run builtins is now done in execArg this is because we can all that to call it with the splitted string index and see what the
+//first thing is (a builtin or an external command (ls))
+execArg(){
+    check string for each, if none external
+    cd:
+        argument following cd command, use in chdir()
+    clr:
+        printf("\e[1;1H\e[2]");
+    Dir:
+        use readdir in dirent.h to read everything in a directory
+    Environ:
+        getenv()
+    Echo:
+        repeat user text
+        take in number of args
+        take in the list of tokenized args
+        print each one, one after another
+        newline
+    Help:
+        print user Manual
+    Pause:
+        while(1) //spin until get char
+        getchar()
+    quit:
+        exit(0)
+
+    else
+    run external in bin or currentdirectory
+
+
