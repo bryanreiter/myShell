@@ -1,7 +1,8 @@
 # Project 2: Developing a Linux Shell
 
-Originally I anticipated this project as being extremely difficult. I will not lie, it is definitely difficult
-and has me researching way more than any other project.
+## **NOTE**: 
+Unfortunately I do not have the rights to make the original repository public, so it documented here. The commits are public for the original project.
+
 
 ## Details
 
